@@ -244,6 +244,7 @@ MAKE_exchange_plan_target();
 MAKE_exchange_drive_commands();
 //Needed for localization
 MAKE_exchange_plan_current();
+MAKE_exchange_moveit_plan();
 aurora::robot_loc2D currentLocation;
 
 bool show_GUI=true;
@@ -1309,6 +1310,11 @@ void robot_manager_t::update(void) {
         sizeof(command),n);
     }
 
+  }
+
+  if (exchange_moveit_plan.updated()) {
+    robot_joint_state j = exchange_moveit_plan.read();
+    move_arm(j);
   }
 
 // Perform action based on state recieved from FrontEnd

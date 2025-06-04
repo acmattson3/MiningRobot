@@ -10,6 +10,8 @@
 
 #include <iostream>
 #include <cmath>
+#include <fstream>
+#include <map>
 
 #include "aurora/robot_base.h"
 #include "aurora/robot_states.cpp"
@@ -17,6 +19,7 @@
 #include "aurora/kinematic_links.cpp"
 #include "aurora/network.h"
 #include "aurora/ui.h"
+#include "aurora/data_exchange.h"
 
 #include "ogl/event.cpp"
 #include "osl/socket.cpp"
@@ -25,6 +28,55 @@
 #include "osl/porthread.cpp"
 
 #include "aurora/lunatic.h"
+
+MAKE_exchange_marker_reports_depth();
+MAKE_exchange_marker_reports_webcam();
+MAKE_exchange_backend_state();
+MAKE_exchange_moveit_goal();
+MAKE_exchange_moveit_plan();
+
+std::map<int, vec3> marker_offsets;
+
+vec3 offset_for_marker(int id) {
+    auto it = marker_offsets.find(id);
+    if (it != marker_offsets.end()) return it->second;
+    return vec3(0,0,0);
+}
+
+void load_marker_offsets(const char *fname="marker_offsets.txt") {
+    std::ifstream f(fname);
+    if (!f) { std::cerr << "No marker offset file " << fname << "\n"; return; }
+    int id; float x,y,z; 
+    while (f >> id >> x >> y >> z) {
+        marker_offsets[id]=vec3(x,y,z);
+    }
+}
+
+// Send the first detected marker location to MoveIt, with offset
+void goto_first_marker() {
+    const auto &state = exchange_backend_state.read();
+    aurora::robot_coord3D frame = state.loc.get3D();
+    aurora::robot_link_coords links(state.joint, frame);
+
+    auto process_reports = [&](const aurora::vision_marker_reports &reps, aurora::robot_link_index cam)
+    {
+        const auto &cam_coord = links.coord3D(cam);
+        for (const auto &r : reps) if (r.is_valid()) {
+            aurora::robot_coord3D goal = cam_coord.compose(r.coords);
+            vec3 off = offset_for_marker(r.markerID);
+            goal.origin += off.x*goal.X + off.y*goal.Y + off.z*goal.Z;
+            exchange_moveit_goal.write_begin() = goal;
+            exchange_moveit_goal.write_end();
+            return true;
+        }
+        return false;
+    };
+
+    if (exchange_marker_reports_depth.updated())
+        if (process_reports(exchange_marker_reports_depth.read(), aurora::link_depthcam)) return;
+    if (exchange_marker_reports_webcam.updated())
+        process_reports(exchange_marker_reports_webcam.read(), aurora::link_drivecam);
+}
 
 
 /**
@@ -60,8 +112,11 @@ void robot_manager_t::update(void) {
 	double time=robotTime();
 	
 // Run UI
-	ui.update(oglKeyMap,robot);
-	//robotPrintLines(ui.description);
+        ui.update(oglKeyMap,robot);
+        //robotPrintLines(ui.description);
+
+        if (oglKey('o', "goto marker"))
+            goto_first_marker();
 	
 	if (time>=last_command_time+0.050) 
 	{
@@ -179,9 +234,10 @@ extern "C" void display(void) {
 }
 
 
-int main(int argc,char *argv[]) 
+int main(int argc,char *argv[])
 {
-	glutInit(&argc,argv);
+        load_marker_offsets("autonomy/frontend/marker_offsets.txt");
+        glutInit(&argc,argv);
 	
 	// Set screen size
 	int w=1280, h=700;

@@ -1,0 +1,4 @@
+# markerID offset_x offset_y offset_z (in meters)
+# Example offsets to stay half a meter back from the marker
+6 0.0 -0.5 0.0
+17 0.0 -0.3 0.0

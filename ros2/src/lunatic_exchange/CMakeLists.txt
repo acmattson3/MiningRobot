@@ -21,6 +21,17 @@ ament_target_dependencies(
   "rclcpp"
 )
 
+add_executable(lunatic_moveit src/moveit_bridge.cpp)
+target_include_directories(lunatic_moveit PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+target_compile_features(lunatic_moveit PUBLIC c_std_99 cxx_std_17)
+ament_target_dependencies(
+  lunatic_moveit
+  "moveit_ros_planning_interface"
+  "rclcpp"
+)
+
 
 # Install all files to share/
 install(DIRECTORY config DESTINATION share/${PROJECT_NAME}/ )
@@ -29,7 +40,7 @@ install(DIRECTORY launch DESTINATION share/${PROJECT_NAME})
 
 
 # Binary:
-install(TARGETS lunatic_exchange DESTINATION lib/${PROJECT_NAME})
+install(TARGETS lunatic_exchange lunatic_moveit DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
