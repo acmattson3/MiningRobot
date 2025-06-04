@@ -67,15 +67,20 @@ void goto_first_marker() {
             goal.origin += off.x*goal.X + off.y*goal.Y + off.z*goal.Z;
             exchange_moveit_goal.write_begin() = goal;
             exchange_moveit_goal.write_end();
+            robotPrintln("MoveIt goal for marker %d offset %.2f %.2f %.2f", r.markerID, off.x, off.y, off.z);
             return true;
         }
         return false;
     };
 
+    bool sent = false;
     if (exchange_marker_reports_depth.updated())
-        if (process_reports(exchange_marker_reports_depth.read(), aurora::link_depthcam)) return;
-    if (exchange_marker_reports_webcam.updated())
-        process_reports(exchange_marker_reports_webcam.read(), aurora::link_drivecam);
+        sent = process_reports(exchange_marker_reports_depth.read(), aurora::link_depthcam);
+    if (!sent && exchange_marker_reports_webcam.updated())
+        sent = process_reports(exchange_marker_reports_webcam.read(), aurora::link_drivecam);
+
+    if (!sent)
+        robotPrintln("MoveIt goal: no marker available");
 }
 
 

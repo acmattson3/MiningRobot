@@ -22,6 +22,7 @@ Low Mode Actions
 
 High Mode Actions
   Arrow keys control the arm tilt and tool/swing
+  WASD control the boom and stick
 
 Arm Mode Actions
   Arrow keys drive the four arm joints

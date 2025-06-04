@@ -40,6 +40,9 @@ private:
     if (goal.percent == last_goal_.percent && goal.origin == last_goal_.origin)
       return; // already processed
 
+    RCLCPP_INFO(get_logger(), "MoveIt planning to %.2f %.2f %.2f", goal.origin.x,
+                goal.origin.y, goal.origin.z);
+
     geometry_msgs::msg::Pose pose;
     pose.position.x = goal.origin.x;
     pose.position.y = goal.origin.y;
@@ -67,6 +70,9 @@ private:
         j.array[i] = pt.positions[i] * 180.0 / M_PI;
       exchange_moveit_plan.write_begin() = j;
       exchange_moveit_plan.write_end();
+      RCLCPP_INFO(get_logger(), "MoveIt plan written with %zu joints", n);
+    } else {
+      RCLCPP_WARN(get_logger(), "MoveIt planning failed");
     }
 
     last_goal_ = goal;
