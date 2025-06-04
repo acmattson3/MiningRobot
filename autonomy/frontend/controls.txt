@@ -1,44 +1,59 @@
-This File contains the current UI setup for the operating the robot.
+Robot Frontend Controls
+=======================
 
-Keyboard:
-Driving:
+Keyboard Controls
+-----------------
 
-forward:w
-reverse:s
-left:a
-right:d
-Stop: space
+Driving (Low mode default)
+  w : drive forward
+  s : drive reverse
+  a : turn left
+  d : turn right
+  space : emergency stop
 
-Special Commands:
+Mode Selection
+  b : Low mode (drive and scoop)
+  h : High mode (boom/stick/tilt or grinder)
+  j : Arm mode
+  P : Pop previous state
 
-Lower Front wheels: v
-Raise Front wheels: f
-Raise dump bucket: UP_ARROW
-Lower Dump bucket: DOWN_ARROW
-Toggle mining mode: m
-Run mining head in reverse: j
-Toggle high power mode: p
-Toggle dump mode: KEY_LEFT
-Toggle Demo mode (Only to be used during public demo's): D
-Search for marker and go to it: o
+Low Mode Actions
+  Arrow keys control the front scoop (fork and dump)
 
+High Mode Actions
+  Arrow keys control the arm tilt and tool/swing
 
-Joystick Buttons:
+Arm Mode Actions
+  Arrow keys drive the four arm joints
+  g : close gripper
+  r : open gripper
 
-Driving:
-Forward/Reverse : left Y
-Left/Right: left X
-stop: 3
+Other Commands
+  o : search for the first marker and send a MoveIt goal
+  l / L : read left load cell while held
 
-Special Commands:
-Lower Front wheels: 5
-Raise Front wheels: 6
-Raise/Lower Dump bucket: right Y
-Toggle mining mode: 1
-Run mining head: right +X (-X : reverse)
+Power Limit Adjustments
+  Hold one of the following keys and press a number (`, 0-9, -, =) to set its value:
+    p : drive power
+    t : tool power
+    c : cut depth
+    v : cut offset
+    g : mining aggression
+    f : autonomous driving speed
 
+Joystick Controls
+-----------------
 
+Hold the left shoulder button to enable joystick axes.
 
+Axes (Logitech F310 mapping)
+  Left stick Y : forward/reverse
+  Left stick X : turn
+  Right stick X/Y : context dependent as per mode (scoop, tilt or arm joints)
 
-
-
+Buttons
+  A (1) : Low mode
+  B (2) : High mode
+  Y (4) : Arm mode
+  X (3) : Stop
+  Right shoulder (6) : grab (arm mode)
