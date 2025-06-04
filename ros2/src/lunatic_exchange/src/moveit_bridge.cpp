@@ -60,8 +60,8 @@ private:
     moveit::planning_interface::MoveGroupInterface::Plan plan;
     if (group_.plan(plan) == moveit::core::MoveItErrorCode::SUCCESS) {
       const auto &pt = plan.trajectory_.joint_trajectory.points.back();
-      aurora::robot_joint_state j{};
-      size_t n = std::min((size_t)aurora::robot_joint_state::count,
+      robot_joint_state j{};
+      size_t n = std::min((size_t)robot_joint_state::count,
                           pt.positions.size());
       for (size_t i = 0; i < n; i++)
         j.array[i] = pt.positions[i] * 180.0 / M_PI;

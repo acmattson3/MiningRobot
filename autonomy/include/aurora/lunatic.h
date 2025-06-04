@@ -386,7 +386,7 @@ public:
 #define MAKE_exchange_moveit_goal()   aurora::data_exchange<aurora::robot_coord3D> exchange_moveit_goal("moveit_goal.coord3D")
 
 /** Shared memory channel for MoveIt joint solutions */
-#define MAKE_exchange_moveit_plan()   aurora::data_exchange<aurora::robot_joint_state> exchange_moveit_plan("moveit_plan.joint")
+#define MAKE_exchange_moveit_plan()   aurora::data_exchange<robot_joint_state> exchange_moveit_plan("moveit_plan.joint")
 
 
 
