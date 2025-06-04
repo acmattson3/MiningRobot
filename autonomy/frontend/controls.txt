@@ -30,6 +30,8 @@ Arm Mode Actions
 
 Other Commands
   o : search for the first marker and send a MoveIt goal
+  The per-marker approach offset is configured in marker_offsets.txt.
+  Requires lunatic_moveit to be running.
   l / L : read left load cell while held
 
 Power Limit Adjustments
