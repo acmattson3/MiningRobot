@@ -31,6 +31,8 @@
 
 #include "aurora/simulator.h"
 #include <iostream>
+#include <unistd.h>
+#include <sys/types.h>
 
 
 #include "aurora/lunatic.h"
@@ -1567,7 +1569,16 @@ int main(int argc,char *argv[])
 
   robot_manager=new robot_manager_t;
   robot_manager->locator.merged.y=100;
-  if (simulate_only) robot_manager->locator.merged.x=150;
+  if (simulate_only) {
+    robot_manager->locator.merged.x=150;
+    // In simulation, launch the dummy marker publisher
+    pid_t pid=fork();
+    if (pid==0) {
+        execl("../sim_vision/sim_markers","sim_markers",(char*)0);
+        perror("execl sim_markers");
+        exit(1);
+    }
+  }
 
   if (show_GUI) 
   { // interactive GUI version (for debugging)

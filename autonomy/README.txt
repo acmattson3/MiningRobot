@@ -54,13 +54,11 @@ nanoslot is how we talk to the Arduino nano microcontrollers
 
 Build instructions:
 	sudo apt-get install freeglut3-dev g++ make libopencv-dev
-	cd backend
-	make
-        ./backend --sim
+        cd backend
+        make
+        ./backend --sim    # automatically runs sim_markers
 (The backend without --sim tries to connect to the nanoslot data exchange.)
-        cd ../sim_vision
-        ./sim_markers   # publishes a dummy marker from sim_marker.txt
-        # edit sim_marker.txt to change its ID or location
+        # edit ../sim_vision/sim_marker.txt to change the dummy marker ID or location
 
 Make Arduino comms work:
 	sudo vipw -g
