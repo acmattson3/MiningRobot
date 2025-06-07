@@ -29,7 +29,7 @@ int main(int argc, char **argv)
 
         exchange_marker_reports_depth.write_begin() = reps;
         exchange_marker_reports_depth.write_end();
-
+        std::cout << "Wrote marker!" << std::endl;
         aurora::data_exchange_sleep(100);
     }
     return 0;

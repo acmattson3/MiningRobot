@@ -1,9 +1,12 @@
-# Default initial positions for the panda arm's ros2_control fake system
+# Default initial positions for the excahauler's ros2_control fake system
 initial_positions:
-  panda_joint1: 0.0
-  panda_joint2: -0.785
-  panda_joint3: 0.0
-  panda_joint4: -2.356
-  panda_joint5: 0.0
-  panda_joint6: 1.571
-  panda_joint7: 0.785
+  fork: 0.0
+  dump: 0.0
+  boom: 0.0
+  stick: 0.0
+  tilt: 0.0
+  arm1: 0.0
+  arm2: 0.0
+  arm3: 0.0
+  arm4: 0.0
+  forktip: 0.0
