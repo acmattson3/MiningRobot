@@ -2,6 +2,7 @@
 #include <moveit/move_group_interface/move_group_interface.h>
 #include <geometry_msgs/msg/pose.hpp>
 #include <Eigen/Geometry>
+#include <memory>
 
 #include "aurora/data_exchange.h"
 #include "aurora/lunatic.h"
@@ -16,10 +17,11 @@ MAKE_exchange_moveit_plan();
 class LunaticMoveIt : public rclcpp::Node {
 public:
   LunaticMoveIt()
-      : Node("lunatic_moveit"),
-        group_(shared_from_this(), "excahauler_arm") {
-    group_.setPoseReferenceFrame("frame_link");
-    group_.setMaxVelocityScalingFactor(0.5);
+      : Node("lunatic_moveit") {
+    group_ = std::make_shared<moveit::planning_interface::MoveGroupInterface>(
+        shared_from_this(), "excahauler_arm");
+    group_->setPoseReferenceFrame("frame_link");
+    group_->setMaxVelocityScalingFactor(0.5);
   }
 
   void spin() {
@@ -58,10 +60,10 @@ private:
     pose.orientation.y = q.y();
     pose.orientation.z = q.z();
 
-    group_.setPoseTarget(pose);
+    group_->setPoseTarget(pose);
 
     moveit::planning_interface::MoveGroupInterface::Plan plan;
-    if (group_.plan(plan) == moveit::core::MoveItErrorCode::SUCCESS) {
+    if (group_->plan(plan) == moveit::core::MoveItErrorCode::SUCCESS) {
       const auto &pt = plan.trajectory_.joint_trajectory.points.back();
       robot_joint_state j{};
       size_t n = std::min((size_t)robot_joint_state::count,
@@ -78,7 +80,7 @@ private:
     last_goal_ = goal;
   }
 
-  moveit::planning_interface::MoveGroupInterface group_;
+  std::shared_ptr<moveit::planning_interface::MoveGroupInterface> group_;
   aurora::robot_coord3D last_goal_{};
 };
 
