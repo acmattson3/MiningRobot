@@ -381,6 +381,13 @@ public:
 
 #define MAKE_exchange_path_plan()   aurora::data_exchange<aurora::path_plan> exchange_path_plan("path_plan.path")
 
+/* ----------- MoveIt integration ---------- */
+/** Shared memory channel for MoveIt goal poses, expressed in robot base frame */
+#define MAKE_exchange_moveit_goal()   aurora::data_exchange<aurora::robot_coord3D> exchange_moveit_goal("moveit_goal.coord3D")
+
+/** Shared memory channel for MoveIt joint solutions */
+#define MAKE_exchange_moveit_plan()   aurora::data_exchange<robot_joint_state> exchange_moveit_plan("moveit_plan.joint")
+
 
 
 

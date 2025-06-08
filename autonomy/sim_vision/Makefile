@@ -1,14 +1,17 @@
 OPTS=-O
 CFLAGS=-Wall -I../include -std=c++11 $(OPTS)
-PROG=sim_vision
+PROGS=sim_vision sim_markers
 
-all: $(PROG)
+all: $(PROGS)
 
-$(PROG): sim.cpp
+sim_vision: sim.cpp
 	g++ $(CFLAGS) $< -o $@
 
-run: $(PROG)
-	./$(PROG)
+sim_markers: sim_markers.cpp
+	g++ $(CFLAGS) $< -o $@
+
+run: sim_vision
+	./sim_vision
 
 clean:
-	- rm $(PROG)
+	- rm $(PROGS)

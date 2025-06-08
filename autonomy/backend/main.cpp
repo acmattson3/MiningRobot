@@ -31,6 +31,8 @@
 
 #include "aurora/simulator.h"
 #include <iostream>
+#include <unistd.h>
+#include <sys/types.h>
 
 
 #include "aurora/lunatic.h"
@@ -244,6 +246,7 @@ MAKE_exchange_plan_target();
 MAKE_exchange_drive_commands();
 //Needed for localization
 MAKE_exchange_plan_current();
+MAKE_exchange_moveit_plan();
 aurora::robot_loc2D currentLocation;
 
 bool show_GUI=true;
@@ -1311,6 +1314,11 @@ void robot_manager_t::update(void) {
 
   }
 
+  if (exchange_moveit_plan.updated()) {
+    robot_joint_state j = exchange_moveit_plan.read();
+    move_arm(j);
+  }
+
 // Perform action based on state recieved from FrontEnd
   //E-Stop command
   if(robot.state==state_STOP)
@@ -1561,7 +1569,16 @@ int main(int argc,char *argv[])
 
   robot_manager=new robot_manager_t;
   robot_manager->locator.merged.y=100;
-  if (simulate_only) robot_manager->locator.merged.x=150;
+  if (simulate_only) {
+    robot_manager->locator.merged.x=150;
+    // In simulation, launch the dummy marker publisher
+    pid_t pid=fork();
+    if (pid==0) {
+        execl("../sim_vision/sim_markers","sim_markers",(char*)0);
+        perror("execl sim_markers");
+        exit(1);
+    }
+  }
 
   if (show_GUI) 
   { // interactive GUI version (for debugging)

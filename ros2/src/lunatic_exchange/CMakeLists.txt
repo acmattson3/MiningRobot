@@ -12,11 +12,22 @@ find_package(rclcpp REQUIRED)
 
 add_executable(lunatic_exchange src/lunatic_exchange.cpp)
 target_include_directories(lunatic_exchange PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>)
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/aurora_include>
+  $<INSTALL_INTERFACE:aurora_include>)
 target_compile_features(lunatic_exchange PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 ament_target_dependencies(
   lunatic_exchange
+  "moveit_ros_planning_interface"
+  "rclcpp"
+)
+
+add_executable(lunatic_moveit src/moveit_bridge.cpp)
+target_include_directories(lunatic_moveit PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/aurora_include>
+  $<INSTALL_INTERFACE:include>)
+target_compile_features(lunatic_moveit PUBLIC c_std_99 cxx_std_17)
+ament_target_dependencies(
+  lunatic_moveit
   "moveit_ros_planning_interface"
   "rclcpp"
 )
@@ -29,7 +40,7 @@ install(DIRECTORY launch DESTINATION share/${PROJECT_NAME})
 
 
 # Binary:
-install(TARGETS lunatic_exchange DESTINATION lib/${PROJECT_NAME})
+install(TARGETS lunatic_exchange lunatic_moveit DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
